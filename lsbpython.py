@@ -28,15 +28,15 @@ class LSBSteg():
         self.image = im
         self.height, self.width, self.nbchannels = im.shape
         self.size = self.width * self.height
-        
+
         self.maskONEValues = [1,2,4,8,16,32,64,128]
         #Mask used to put one ex:1->00000001, 2->00000010 .. associated with OR bitwise
         self.maskONE = self.maskONEValues.pop(0) #Will be used to do bitwise operations
-        
+
         self.maskZEROValues = [254,253,251,247,239,223,191,127]
         #Mak used to put zero ex:254->11111110, 253->11111101 .. associated with AND bitwise
         self.maskZERO = self.maskZEROValues.pop(0)
-        
+
         self.curwidth = 0  # Current width position
         self.curheight = 0 # Current height position
         self.curchan = 0   # Current channel position
@@ -48,10 +48,10 @@ class LSBSteg():
                 val[self.curchan] = int(val[self.curchan]) | self.maskONE #OR with maskONE
             else:
                 val[self.curchan] = int(val[self.curchan]) & self.maskZERO #AND with maskZERO
-                
+
             self.image[self.curheight,self.curwidth] = tuple(val)
             self.next_slot() #Move "cursor" to the next space
-        
+
     def next_slot(self):#Move to the next slot were information can be taken or put
         if self.curchan == self.nbchannels-1: #Next Space is the following channel
             self.curchan = 0
@@ -79,10 +79,10 @@ class LSBSteg():
             return "1"
         else:
             return "0"
-    
+
     def read_byte(self):
         return self.read_bits(8)
-    
+
     def read_bits(self, nb): #Read the given number of bits
         bits = ""
         for i in range(nb):
@@ -91,7 +91,7 @@ class LSBSteg():
 
     def byteValue(self, val):
         return self.binary_value(val, 8)
-        
+
     def binary_value(self, val, bitsize): #Return the binary value of an int as a byte
         binval = bin(val)[2:]
         if len(binval) > bitsize:
@@ -108,7 +108,7 @@ class LSBSteg():
             c = ord(char)
             self.put_binary_value(self.byteValue(c))
         return self.image
-       
+
     def decode_text(self):
         ls = self.read_bits(16) #Read the text size in bytes
         l = int(ls,2)
@@ -136,7 +136,7 @@ class LSBSteg():
                     self.put_binary_value(self.byteValue(int(val)))
         return self.image
 
-                    
+
     def decode_image(self):
         width = int(self.read_bits(16),2) #Read 16bits and convert it in int
         height = int(self.read_bits(16),2)
@@ -148,7 +148,7 @@ class LSBSteg():
                     val[chan] = int(self.read_byte(),2) #Read the value
                     unhideimg[h,w] = tuple(val)
         return unhideimg
-    
+
     def encode_binary(self, data):
         l = len(data)
         if self.width*self.height*self.nbchannels < l+64:

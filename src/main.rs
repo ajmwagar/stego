@@ -71,11 +71,9 @@ impl LSBStego {
             let mut val = self.image.get_pixel_mut(self.current_width, self.current_height);
 
             if c == '1' {
-                println!("MaskOne: {}", MASK_ONE_VALUES[self.maskONE as usize]);
                 val[self.current_channel] = val[self.current_channel] | MASK_ONE_VALUES[self.maskONE as usize]; // Or with maskONE
             }
             else {
-                println!("MaskZero: {}", MASK_ZERO_VALUES[self.maskZERO as usize]);
                 val[self.current_channel] = val[self.current_channel] & MASK_ZERO_VALUES[self.maskZERO as usize]; // And with maskZERO
             }
 
@@ -83,7 +81,6 @@ impl LSBStego {
 
             self.next_slot();
         }
-        println!("bits: {}", bits);
             
 
     }
@@ -91,15 +88,12 @@ impl LSBStego {
     /// move to the next slot where informations can me mutated
     pub fn next_slot(&mut self) {
         if self.current_channel == self.channels - 1 {
-            println!("Reseting Channel");
             self.current_channel = 0;
 
             if self.current_width == self.width - 1 {
-                    println!("Reseting Width");
                 self.current_width = 0;
 
                 if self.current_height == self.height - 1 {
-                    println!("Reseting Hieght");
                     self.current_height = 0;
 
                     if MASK_ONE_VALUES[self.maskONE as usize] == 128 {
@@ -112,17 +106,14 @@ impl LSBStego {
                     }
                 }
                 else {
-                    println!("Changing Height");
                     self.current_height += 1;
                 }
             }
             else {
-                println!("Changing Width");
                 self.current_width += 1;
             }
         }
         else {
-            println!("Changing Channel");
             self.current_channel += 1;
         }
     }
@@ -176,6 +167,7 @@ impl LSBStego {
     fn encode_text(&mut self, txt: String) -> ImageBuffer<Bgr<u8>, Vec<u8>> {
         // Length coded on 2 bytes
         let binl = self.binary_value(txt.len(), 16);
+        println!("{}", binl);
         self.put_binary_value(binl);
         for c in txt.chars() {
             let byteValue = self.byteValue(c as usize);
@@ -183,13 +175,13 @@ impl LSBStego {
             self.put_binary_value(byteValue)
         }
 
-
         // Return the new image
         self.image.clone()
     }
 
     fn decode_text(&mut self) -> String {
         let size = self.read_bits(16);
+        print!("{}", size);
         let l = u32::from_str_radix(&size, 2).unwrap();
 
         let mut txt = String::new();
@@ -223,11 +215,13 @@ fn main() {
 
     let mut stego = LSBStego::new(im.clone());
 
-    // print!("Hidden: {}",stego.decode_text());
 
-    let im2 = stego.encode_text("9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999".to_string());
+    print!("Hidden: {}",stego.decode_text());
 
-    // Write the contents of this image to the Writer in PNG format.
-    im2.save(&Path::new(&format!("output-{}",file)));
+
+    // let im2 = stego.encode_text("Hello, Stego!".to_string());
+
+    // // Write the contents of this image to the Writer in PNG format.
+    // im2.save(&Path::new(&format!("output-{}",file)));
 
 }
