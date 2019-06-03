@@ -1,0 +1,8 @@
+[package]
+name = "stego"
+version = "0.1.0"
+authors = ["Avery Wagar <ajmw.subs@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+image = "0.21"
