@@ -37,7 +37,7 @@ cargo install stego
 - [x] CLI
 - [x] Encoding / Decoding of text
 - [x] Encoding / Decoding of images 
-- [ ] Encoding / Decoding of binary files
+- [x] Encoding / Decoding of binary files
 - [ ] Better error handling/messages
 - [ ] Trait based API for custom datatypes
 - [ ] [bincode](https://github.com/servo/bincode) support

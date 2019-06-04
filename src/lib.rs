@@ -219,6 +219,7 @@ impl LSBStego {
         self.image.clone()
     }
 
+    /// Decodes a hidden image from another image
     fn decode_image(&mut self) -> RgbaImage {
         let channels = <Rgba<u8> as Pixel>::channel_count() as u32;
 
@@ -236,5 +237,41 @@ impl LSBStego {
         }
 
         self.image.clone()
+    }
+
+    /// Encodes a binary file into the image
+    fn encode_binary(&mut self, data: Vec<u8>) -> RgbaImage {
+        let length = data.len();
+
+        if self.width*self.height*(self.channels as u32) < length as u32 + 64 {
+            panic!("Carrier image not big enough to hold hidden file");
+        }
+
+        self.put_binary_value(self.binary_value(length, 64));
+
+        for byte in data {
+            self.put_binary_value(self.byteValue(byte as usize));
+        }
+
+        self.image.clone()
+    }
+
+    /// Encodes a binary file into the image
+    fn decode_binary(&mut self) -> Vec<u8> {
+        let length = usize::from_str_radix(&self.read_bits(64), 2).unwrap();
+        let mut output: Vec<u8> = Vec::with_capacity(length);
+
+        if self.width*self.height*(self.channels as u32) < length as u32 + 64 {
+            panic!("Carrier image not big enough to hold hidden file");
+        }
+
+        self.put_binary_value(self.binary_value(length, 64));
+
+        for i in 0..length{
+            output.push(u8::from_str_radix(&self.read_byte(),2).unwrap());
+        }
+         
+        output
+
     }
 }
