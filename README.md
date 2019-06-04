@@ -25,6 +25,9 @@ stego encode --input image.png --output encoded-image.png --txt "Hello, Stego\!"
 
 # Simple decoding
 stego decode --input encoded-image.png # prints out the encoded message ("Hello, Stego!") hidden in the provided image
+
+# Stdin detection
+echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.png
 ```
 
 
