@@ -106,7 +106,9 @@ class LSBSteg():
         self.put_binary_value(binl) #Put text length coded on 4 bytes
         for char in txt: #And put all the chars
             c = ord(char)
-            self.put_binary_value(self.byteValue(c))
+            byteValue = self.byteValue(c)
+            print("byteValue: " + str(byteValue))
+            self.put_binary_value(byteValue)
         return self.image
 
     def decode_text(self):
@@ -176,7 +178,7 @@ def main():
 
     if args['encode']:
         data = open(args["--file"], "rb").read()
-        res = steg.encode_binary(data)
+        res = steg.encode_text("Hello, Stego!")
         cv2.imwrite(out_f, res)
 
     elif args["decode"]:

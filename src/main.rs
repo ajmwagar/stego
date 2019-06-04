@@ -2,14 +2,14 @@ use std::env;
 use std::fs::File;
 use std::path::Path;
 
-use image::{GenericImageView, ImageBuffer, DynamicImage, Bgr};
+use image::{GenericImageView, RgbImage, DynamicImage, Rgba, Pixel};
 
 const MASK_ONE_VALUES: &[u8] = &[1,2,4,8,16,32,64,128];
 const MASK_ZERO_VALUES: &[u8] = &[254,253,251,247,239,223,191,127];
 
 struct LSBStego  {
     /// Image loaded into Stego
-    image: ImageBuffer<Bgr<u8>, Vec<u8>>,
+    image: RgbImage,
     /// Hieght of loaded image
     height: u32,
     /// Width of loaded image
@@ -38,10 +38,10 @@ impl LSBStego {
         let (width, height) = im.dimensions();
 
         LSBStego {
-            image: im.to_bgr(),
+            image: im.to_rgb(),
             width,
             height,
-            channels: 3,
+            channels: 1,
             current_height: 0,
             current_width: 0,
             current_channel: 0,
@@ -100,7 +100,6 @@ impl LSBStego {
                         panic!("No available slots remaining (image filled)");
                     }
                     else {
-                        println!("Changing Masks");
                         self.maskONE += 1;
                         self.maskZERO += 1;
                     }
@@ -123,7 +122,6 @@ impl LSBStego {
         let val = self.image.get_pixel(self.current_width, self.current_height)[self.current_channel];
         let val = val & MASK_ONE_VALUES[self.maskONE];
         self.next_slot();
-        println!("Reading: {}", val);
 
         if val > 0 { '1' } else { '0' }
         
@@ -164,14 +162,13 @@ impl LSBStego {
 
     }
     
-    fn encode_text(&mut self, txt: String) -> ImageBuffer<Bgr<u8>, Vec<u8>> {
+    /// Encodes a text message into an image
+    pub fn encode_text(&mut self, txt: String) -> RgbImage {
         // Length coded on 2 bytes
         let binl = self.binary_value(txt.len(), 16);
-        println!("{}", binl);
         self.put_binary_value(binl);
         for c in txt.chars() {
             let byteValue = self.byteValue(c as usize);
-
             self.put_binary_value(byteValue)
         }
 
@@ -179,9 +176,9 @@ impl LSBStego {
         self.image.clone()
     }
 
-    fn decode_text(&mut self) -> String {
+    /// Decodes a hidden message from an image
+    pub fn decode_text(&mut self) -> String {
         let size = self.read_bits(16);
-        print!("{}", size);
         let l = u32::from_str_radix(&size, 2).unwrap();
 
         let mut txt = String::new();
@@ -193,12 +190,41 @@ impl LSBStego {
 
         txt
     }
+
+    /// Encodes an image into another image
+    pub fn encode_image(&mut self, im: DynamicImage) -> RgbImage {
+        let (width, height) = im.dimensions();
+
+        let channels = <Rgba<u8> as Pixel>::channel_count() as u32;
+
+        if self.width * self.height * (self.channels as u32) < width * height * channels {
+            panic!("Carrier image not big enough to hold hidden image");
+        }
+
+        let binw = self.binary_value(width as usize, 16);
+        let binh = self.binary_value(height as usize, 16);
+
+        self.put_binary_value(binw);
+        self.put_binary_value(binh);
+
+        for h in 0..height{
+            for w in 0..width {
+                for chan in 0..channels {
+                    let val = im.get_pixel(w, h)[chan as usize];
+                    self.put_binary_value(self.byteValue(val as usize));
+                }
+
+            }
+        }
+
+        self.image.clone()
+    }
 }
 
 
 fn main() {
-    let file = if env::args().count() == 2 {
-        env::args().nth(1).unwrap()
+    let file = if env::args().count() == 3 {
+        env::args().nth(2).unwrap()
     } else {
         panic!("Please enter a file")
     };
@@ -215,13 +241,19 @@ fn main() {
 
     let mut stego = LSBStego::new(im.clone());
 
+    if env::args().nth(1).unwrap() == "decode" {
+        print!("Hidden: {}",stego.decode_text());
+    }
+    else if env::args().nth(1).unwrap() == "encode" {
+        let im2 = stego.encode_text("Hello, Stego!".to_string());
 
-    print!("Hidden: {}",stego.decode_text());
+        let newfile = format!("output-{}",file);
+
+        println!("Saving file to {}", newfile);
+
+        im2.save(&Path::new(&newfile));
+    }
 
 
-    // let im2 = stego.encode_text("Hello, Stego!".to_string());
-
-    // // Write the contents of this image to the Writer in PNG format.
-    // im2.save(&Path::new(&format!("output-{}",file)));
 
 }
