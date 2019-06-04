@@ -37,11 +37,12 @@ impl LSBStego {
     pub fn new(im: DynamicImage) -> Self {
         let (width, height) = im.dimensions();
 
+
         LSBStego {
             image: im.to_rgba(),
             width,
             height,
-            channels: 4,
+            channels: <Rgba<u8> as Pixel>::channel_count() as usize,
             current_height: 0,
             current_width: 0,
             current_channel: 0,
