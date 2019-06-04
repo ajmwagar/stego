@@ -5,6 +5,7 @@ use structopt::StructOpt;
 use std::env;
 use std::fs::File;
 use std::path::{Path, PathBuf};
+use std::io::prelude::*;
 
 use image::{GenericImageView, RgbaImage, DynamicImage, Rgba, Pixel};
 
@@ -229,15 +230,13 @@ impl LSBStego {
 
         let width = u32::from_str_radix(&self.read_bits(16), 2).unwrap();
         let height = u32::from_str_radix(&self.read_bits(16), 2).unwrap();
-        let unhideimg = image::RgbaImage::new(width, height);
+        let mut unhideimg = image::RgbaImage::new(width, height);
 
         for h in 0..height {
             for w in 0..width {
-                for chan in channels {
+                for chan in 0..channels {
                     let val = unhideimg.get_pixel_mut(w,h);
-                    val[chan] = u8::from_str_radix(&self.read_byte(), 2).unwrap();
-
-
+                    val[chan as usize] = u8::from_str_radix(&self.read_byte(), 2).unwrap();
                 }
             }
         }
@@ -296,8 +295,17 @@ fn main() {
             let im: DynamicImage = image::open(&Path::new(&input)).unwrap();
             let mut stego = LSBStego::new(im.clone());
 
-            let im2 = stego.encode_text(hiddentext.unwrap());
+            let mut im2;
 
+            if hiddentext != None {
+                im2 = stego.encode_text(hiddentext.unwrap());
+            }
+            else {
+                let mut msg = String::new();
+                std::io::stdin().read_to_string(&mut msg);
+
+                im2 = stego.encode_text(msg);
+            }
 
             println!("Saving file to {:?}", output);
 
@@ -311,7 +319,7 @@ fn main() {
             let mut stego = LSBStego::new(im.clone());
 
             // TODO Support hidden image / hiddenfile
-            print!("Hidden: {}",stego.decode_text());
+            print!("{}",stego.decode_text());
 
         }
 
