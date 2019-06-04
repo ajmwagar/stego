@@ -11,6 +11,7 @@
 
 - Encoding and decoding of images/text/binary files into audio/photo/movie files
 - Fast and nearly undetectable encoding.
+- Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--txt`)
 - lossless decoding of data
 - Simple, stateless CLI
 - Zero system-dependencies (standalone binary) 
