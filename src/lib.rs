@@ -33,6 +33,7 @@ pub struct LSBStego  {
 
 impl LSBStego {
 
+    /// Create a new LSBStego instance by taking in a DynamicImage
     pub fn new(im: DynamicImage) -> Self {
         let (width, height) = im.dimensions();
 
@@ -64,6 +65,7 @@ impl LSBStego {
         MASK_ZERO_VALUES[self.maskZERO as usize] as usize
     }
 
+    /// Put a string of binary_values into `self.image`
     pub fn put_binary_value(&mut self, bits: String) {
         for c in bits.chars() {
             // Get pixel value
@@ -84,7 +86,7 @@ impl LSBStego {
 
     }
 
-    /// move to the next slot where informations can me mutated
+    /// move to the next slot where information can me mutated
     pub fn next_slot(&mut self) {
         if self.current_channel == self.channels - 1 {
             self.current_channel = 0;
@@ -142,10 +144,12 @@ impl LSBStego {
         bits
     }
 
+    /// Returns a binary string in byte size of a given integer
     fn byteValue(&self, val: usize) -> String {
         self.binary_value(val, 8)
     }
     
+    /// Returns the binary of a given integer in the length of `bitsize`
     fn binary_value(&self, val: usize, bitsize: usize) -> String {
         let mut binval = String::with_capacity(bitsize);
         binval.push_str(&format!("{:b}", val));
@@ -266,7 +270,6 @@ impl LSBStego {
         }
 
         self.put_binary_value(self.binary_value(length, 64));
-
         for i in 0..length{
             output.push(u8::from_str_radix(&self.read_byte(),2).unwrap());
         }
