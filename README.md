@@ -40,7 +40,7 @@ cargo install stego
 - [ ] Encoding / Decoding of audio files
 - [ ] Encoding / Decoding of binary files
 - [ ] Encoding / Decoding of video files
-- [  ] Better error handling/messages
+- [ ] Better error handling/messages
 - [ ] Jurassic Park
 - [ ] Another mass extinction
 - [ ] ???
