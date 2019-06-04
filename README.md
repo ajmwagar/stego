@@ -11,6 +11,7 @@
 
 - Encoding and decoding of images/text/binary files into audio/photo/movie files
 - Fast and nearly undetectable encoding.
+- Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--txt`)
 - lossless decoding of data
 - Simple, stateless CLI
 - Zero system-dependencies (standalone binary) 
@@ -24,6 +25,9 @@ stego encode --input image.png --output encoded-image.png --txt "Hello, Stego\!"
 
 # Simple decoding
 stego decode --input encoded-image.png # prints out the encoded message ("Hello, Stego!") hidden in the provided image
+
+# Stdin detection
+echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.png
 ```
 
 
