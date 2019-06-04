@@ -1,15 +1,19 @@
+#[macro_use]
+extern crate structopt;
+use structopt::StructOpt;
+
 use std::env;
 use std::fs::File;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-use image::{GenericImageView, RgbImage, DynamicImage, Rgba, Pixel};
+use image::{GenericImageView, RgbaImage, DynamicImage, Rgba, Pixel};
 
 const MASK_ONE_VALUES: &[u8] = &[1,2,4,8,16,32,64,128];
 const MASK_ZERO_VALUES: &[u8] = &[254,253,251,247,239,223,191,127];
 
 struct LSBStego  {
     /// Image loaded into Stego
-    image: RgbImage,
+    image: RgbaImage,
     /// Hieght of loaded image
     height: u32,
     /// Width of loaded image
@@ -38,10 +42,10 @@ impl LSBStego {
         let (width, height) = im.dimensions();
 
         LSBStego {
-            image: im.to_rgb(),
+            image: im.to_rgba(),
             width,
             height,
-            channels: 1,
+            channels: 4,
             current_height: 0,
             current_width: 0,
             current_channel: 0,
@@ -163,7 +167,7 @@ impl LSBStego {
     }
     
     /// Encodes a text message into an image
-    pub fn encode_text(&mut self, txt: String) -> RgbImage {
+    pub fn encode_text(&mut self, txt: String) -> RgbaImage {
         // Length coded on 2 bytes
         let binl = self.binary_value(txt.len(), 16);
         self.put_binary_value(binl);
@@ -192,7 +196,7 @@ impl LSBStego {
     }
 
     /// Encodes an image into another image
-    pub fn encode_image(&mut self, im: DynamicImage) -> RgbImage {
+    pub fn encode_image(&mut self, im: DynamicImage) -> RgbaImage {
         let (width, height) = im.dimensions();
 
         let channels = <Rgba<u8> as Pixel>::channel_count() as u32;
@@ -221,38 +225,96 @@ impl LSBStego {
     }
 }
 
+#[derive(StructOpt, Debug)]
+#[structopt(name = "stego", about = "Stegnography at it's finest")]
+enum StegoCLI {
+    #[structopt(name = "encode")]
+    Encode {
+        #[structopt(short = "i", long = "input", parse(from_os_str))]
+        /// Input image
+        input: PathBuf,
+        #[structopt(short = "o", long = "output", parse(from_os_str))]
+        /// File to save modified image as
+        output: PathBuf,
+
+        #[structopt(short = "t", long = "txt")]
+        /// Text message to embed in image
+        hiddentext: Option<String>,
+
+        #[structopt(long = "image", parse(from_os_str))]
+        /// Image to embed in host image
+        hiddenimage: Option<PathBuf>,
+
+        #[structopt(short ="f", long = "file", parse(from_os_str))]
+        /// File to embed in host image
+        hiddenfile: Option<PathBuf>,
+    },
+    #[structopt(name = "decode")]
+    Decode {
+        #[structopt(short = "i", long = "input", parse(from_os_str))]
+        /// Input image to decode
+        input: PathBuf,
+
+        #[structopt(long = "image", parse(from_os_str))]
+        /// Path to save hidden image to
+        hiddenimage: Option<PathBuf>,
+
+        #[structopt(short ="f", long = "file", parse(from_os_str))]
+        /// Path to save file to
+        hiddenfile: Option<PathBuf>,
+    },
+}
 
 fn main() {
-    let file = if env::args().count() == 3 {
-        env::args().nth(2).unwrap()
-    } else {
-        panic!("Please enter a file")
-    };
+    let opt = StegoCLI::from_args();
 
-    // Use the open function to load an image from a Path.
-    // ```open``` returns a dynamic image.
-    let im: DynamicImage = image::open(&Path::new(&file)).unwrap();
+    match opt {
+        StegoCLI::Encode{ input, output, hiddentext, hiddenfile, hiddenimage } => {
+            // Use the open function to load an image from a Path.
+            // ```open``` returns a dynamic image.
+            let im: DynamicImage = image::open(&Path::new(&input)).unwrap();
+            let mut stego = LSBStego::new(im.clone());
 
-    // // The dimensions method returns the images width and height
-    // println!("dimensions {:?}", im.dimensions());
+            let im2 = stego.encode_text(hiddentext.unwrap());
 
-    // // The color method returns the image's ColorType
-    // println!("{:?}", im.color());
 
-    let mut stego = LSBStego::new(im.clone());
+            println!("Saving file to {:?}", output);
 
-    if env::args().nth(1).unwrap() == "decode" {
-        print!("Hidden: {}",stego.decode_text());
+            im2.save(&Path::new(&output));
+
+        },
+        StegoCLI::Decode { input, hiddenimage, hiddenfile } => {
+            // Use the open function to load an image from a Path.
+            // ```open``` returns a dynamic image.
+            let im: DynamicImage = image::open(&Path::new(&input)).unwrap();
+            let mut stego = LSBStego::new(im.clone());
+
+            // TODO Support hidden image / hiddenfile
+            print!("Hidden: {}",stego.decode_text());
+
+        }
+
     }
-    else if env::args().nth(1).unwrap() == "encode" {
-        let im2 = stego.encode_text("Hello, Stego!".to_string());
 
-        let newfile = format!("output-{}",file);
 
-        println!("Saving file to {}", newfile);
+    // let file = if env::args().count() == 3 {
+    //     env::args().nth(2).unwrap()
+    // } else {
+    //     panic!("Please enter a file")
+    // };
 
-        im2.save(&Path::new(&newfile));
-    }
+
+    // // // The dimensions method returns the images width and height
+    // // println!("dimensions {:?}", im.dimensions());
+
+    // // // The color method returns the image's ColorType
+    // // println!("{:?}", im.color());
+
+
+    // if env::args().nth(1).unwrap() == "decode" {
+    // }
+    // else if env::args().nth(1).unwrap() == "encode" {
+    // }
 
 
 
