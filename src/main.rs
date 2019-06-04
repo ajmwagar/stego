@@ -75,9 +75,18 @@ fn main() {
 
             match dtype {
                 DataType::File => {
+                    let mut bytes = Vec::new();
+                    let mut file = File::open(&Path::new(&payload.unwrap())).unwrap();
+
+                    file.read_to_end(&mut bytes);
+
+                    im2 = stego.encode_binary(bytes);
 
                 },
                 DataType::Image => {
+
+                    let pim: DynamicImage = image::open(&Path::new(&payload.unwrap())).unwrap();
+                    let im2 = stego.encode_image(pim);
 
                 },
                 DataType::Text => {
@@ -106,9 +115,28 @@ fn main() {
 
             match dtype {
                 DataType::File => {
+                    let mut bytes: Vec<u8> = Vec::new();
+                    println!("Saving file to {:?}", output);
+
+                    let mut file = File::create(&Path::new(&output.unwrap())).unwrap();
+
+
+                    file.write_all(&stego.decode_binary());
+
+
+//                         let mut file = File::create(&Path::new(&output.unwrap()));
+
+//                         file.
+//                         bytes.(&Path::new(&output.unwrap()));
 
                 },
                 DataType::Image => {
+                        let im2 = stego.decode_image();
+
+                        println!("Saving file to {:?}", output);
+
+                        im2.save(&Path::new(&output.unwrap()));
+
 
                 },
                 DataType::Text => {

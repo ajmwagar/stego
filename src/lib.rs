@@ -225,7 +225,7 @@ impl LSBStego {
     }
 
     /// Decodes a hidden image from another image
-    fn decode_image(&mut self) -> RgbaImage {
+    pub fn decode_image(&mut self) -> RgbaImage {
         let channels = <Rgba<u8> as Pixel>::channel_count() as u32;
 
         let width = u32::from_str_radix(&self.read_bits(16), 2).unwrap();
@@ -245,7 +245,7 @@ impl LSBStego {
     }
 
     /// Encodes a binary file into the image
-    fn encode_binary(&mut self, data: Vec<u8>) -> RgbaImage {
+    pub fn encode_binary(&mut self, data: Vec<u8>) -> RgbaImage {
         let length = data.len();
 
         if self.width*self.height*(self.channels as u32) < length as u32 + 64 {
@@ -262,7 +262,7 @@ impl LSBStego {
     }
 
     /// Encodes a binary file into the image
-    fn decode_binary(&mut self) -> Vec<u8> {
+    pub fn decode_binary(&mut self) -> Vec<u8> {
         let length = usize::from_str_radix(&self.read_bits(64), 2).unwrap();
         let mut output: Vec<u8> = Vec::with_capacity(length);
 
