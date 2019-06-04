@@ -29,6 +29,11 @@ stego decode --input encoded-image.png # prints out the encoded message ("Hello,
 
 # Stdin detection
 echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.png
+
+# Help
+stego --help
+stego encode --help
+stego decode --help
 ```
 
 
@@ -37,6 +42,15 @@ echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.pn
 ```bash
 cargo install stego
 ```
+
+OR
+
+```bash
+git clone https://github.com/ajmwagar/stego
+cd stego
+cargo install --path ./ --force
+```
+
 ## 🚥 Roadmap
 
 - [x] CLI
