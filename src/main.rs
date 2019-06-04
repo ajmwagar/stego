@@ -223,6 +223,27 @@ impl LSBStego {
 
         self.image.clone()
     }
+
+    fn decode_image(&mut self) -> RgbaImage {
+        let channels = <Rgba<u8> as Pixel>::channel_count() as u32;
+
+        let width = u32::from_str_radix(&self.read_bits(16), 2).unwrap();
+        let height = u32::from_str_radix(&self.read_bits(16), 2).unwrap();
+        let unhideimg = image::RgbaImage::new(width, height);
+
+        for h in 0..height {
+            for w in 0..width {
+                for chan in channels {
+                    let val = unhideimg.get_pixel_mut(w,h);
+                    val[chan] = u8::from_str_radix(&self.read_byte(), 2).unwrap();
+
+
+                }
+            }
+        }
+
+        self.image.clone()
+    }
 }
 
 #[derive(StructOpt, Debug)]
