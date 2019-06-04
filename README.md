@@ -37,10 +37,12 @@ cargo install stego
 - [x] CLI
 - [x] Encoding / Decoding of text
 - [x] Encoding / Decoding of images 
-- [ ] Encoding / Decoding of audio files
 - [ ] Encoding / Decoding of binary files
-- [ ] Encoding / Decoding of video files
 - [ ] Better error handling/messages
+- [ ] Trait based API for custom datatypes
+- [ ] [bincode](https://github.com/servo/bincode) support
+- [ ] Encoding / Decoding of audio files
+- [ ] Encoding / Decoding of video files
 - [ ] Jurassic Park
 - [ ] Another mass extinction
 - [ ] ???
