@@ -5,7 +5,7 @@
 
 
 
-*stego* is a stegographic swiss army knife.
+*stego* is a steganographic swiss army knife.
 
 ## Features
 
