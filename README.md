@@ -24,17 +24,25 @@
 ```bash
 
 # Simple encoding
-stego encode --input image.png --output encoded-image.png --txt "Hello, Stego\!" # Encodes the message "Hello, Stego!" into the provided image
+
+# Encodes the message "Hello, Stego!" into the provided image
+stego encode --input image.png --output encoded-image.png --txt "Hello, Stego\!" 
 
 # Simple decoding
-stego decode --input encoded-image.png # prints out the encoded message ("Hello, Stego!") hidden in the provided image
+
+# decodes and prints out the encoded message ("Hello, Stego!") hidden in the provided image
+stego decode --input encoded-image.png 
 
 # Stdin detection
 echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.png
 
 # Example
-cat secret | stego encode -i hostimage.png -o output.png # encodes contents of secret into hostimage.png
-stego decode -i output.png # prints contents of secret
+
+# encodes contents of "secret" into hostimage.png and saves as output.png
+cat secret | stego encode -i hostimage.png -o output.png 
+
+# decodes and prints contents of "secret"
+stego decode -i output.png
 
 # Help
 stego --help
