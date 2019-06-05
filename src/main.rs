@@ -6,12 +6,12 @@ use structopt::StructOpt;
 
 use stego::*;
 
-use std::env;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::io::prelude::*;
+use std::error::Error;
 
-use image::{GenericImageView, RgbaImage, DynamicImage, Rgba, Pixel};
+use image::{RgbaImage, DynamicImage, Pixel};
 
 arg_enum! {
     #[derive(Debug)]
@@ -61,31 +61,31 @@ enum StegoCLI {
     },
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let opt = StegoCLI::from_args();
 
     match opt {
         StegoCLI::Encode{ input, output, dtype, payload } => {
             // Use the open function to load an image from a Path.
             // ```open``` returns a dynamic image.
-            let im: DynamicImage = image::open(&Path::new(&input)).unwrap();
+            let im: DynamicImage = image::open(&Path::new(&input))?;
             let mut stego = LSBStego::new(im.clone());
 
-            let mut im2 = RgbaImage::new(0,0);
+            let mut im2;
 
             match dtype {
                 DataType::File => {
                     let mut bytes = Vec::new();
-                    let mut file = File::open(&Path::new(&payload.unwrap())).unwrap();
+                    let mut file = File::open(&Path::new(&payload.unwrap()))?;
 
-                    file.read_to_end(&mut bytes);
+                    file.read_to_end(&mut bytes)?;
 
                     im2 = stego.encode_binary(bytes);
 
                 },
                 DataType::Image => {
 
-                    let pim: DynamicImage = image::open(&Path::new(&payload.unwrap())).unwrap();
+                    let pim: DynamicImage = image::open(&Path::new(&payload.unwrap()))?;
                     im2 = stego.encode_image(pim);
 
                 },
@@ -95,7 +95,7 @@ fn main() {
                     }
                     else {
                         let mut msg = String::new();
-                        std::io::stdin().read_to_string(&mut msg);
+                        std::io::stdin().read_to_string(&mut msg)?;
 
                         im2 = stego.encode_text(msg);
                     }
@@ -104,24 +104,27 @@ fn main() {
 
             println!("Saving file to {:?}", output);
 
-            im2.save(&Path::new(&output));
+            im2.save(&Path::new(&output))?;
 
+            Ok(())
         },
         StegoCLI::Decode { input, output, dtype} => {
             // Use the open function to load an image from a Path.
             // ```open``` returns a dynamic image.
-            let im: DynamicImage = image::open(&Path::new(&input)).unwrap();
+            let im: DynamicImage = image::open(&Path::new(&input))?;
             let mut stego = LSBStego::new(im.clone());
 
             match dtype {
                 DataType::File => {
-                    let mut bytes: Vec<u8> = Vec::new();
+                    // let bytes: Vec<u8> = Vec::new();
                     println!("Saving file to {:?}", output);
 
-                    let mut file = File::create(&Path::new(&output.unwrap())).unwrap();
+                    let mut file = File::create(&Path::new(&output.unwrap()))?;
 
 
-                    file.write_all(&stego.decode_binary());
+                    file.write_all(&stego.decode_binary())?;
+
+                    Ok(())
 
                 },
                 DataType::Image => {
@@ -129,13 +132,16 @@ fn main() {
 
                         println!("Saving file to {:?}", output);
 
-                        im2.save(&Path::new(&output.unwrap()));
+                        im2.save(&Path::new(&output.unwrap()))?;
 
+                        Ok(())
 
                 },
                 DataType::Text => {
                     // TODO Support hidden image / hiddenfile
                     print!("{}",stego.decode_text());
+
+                    Ok(())
                 }
             } 
 
