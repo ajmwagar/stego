@@ -30,6 +30,10 @@ stego decode --input encoded-image.png # prints out the encoded message ("Hello,
 # Stdin detection
 echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.png
 
+# Example
+cat secret | stego encode -i hostimage.png -o output.png # encodes contents of secret into hostimage.png
+stego decode -i output.png # prints contents of secret
+
 # Help
 stego --help
 stego encode --help
@@ -58,6 +62,7 @@ cargo install --path ./ --force
 - [x] Encoding / Decoding of images 
 - [x] Encoding / Decoding of binary files
 - [ ] Better error handling/messages
+- [ ] CI/Test suite
 - [ ] Trait based API for custom datatypes
 - [ ] [bincode](https://github.com/servo/bincode) support
 - [ ] Encoding / Decoding of audio files
