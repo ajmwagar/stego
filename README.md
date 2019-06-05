@@ -1,8 +1,9 @@
 ![Stego](./img/logo.png)
 
+[![stego](https://docs.rs/ufo_rs/badge.svg)](https://docs.rs/stego)
+[![Crates.io](https://img.shields.io/crates/v/stego.svg)](https://crates.io/crates/stego)
 [![Build Status](https://travis-ci.org/ajmwagar/stego.svg?branch=master)](https://travis-ci.org/ajmwagar/stego)
 [![dependency status](https://deps.rs/repo/github/ajmwagar/stego/status.svg)](https://deps.rs/repo/github/ajmwagar/stego)
-[![stego](https://docs.rs/ufo_rs/badge.svg)](https://docs.rs/stego)
 
 
 
