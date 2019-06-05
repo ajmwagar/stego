@@ -69,7 +69,7 @@ cargo install --path ./ --force
 
 - [x] CLI
 - [x] Encoding / Decoding of text
-- [x] Encoding / Decoding of images 
+- [x] Encoding / Decoding of images **(currently broken see [#5](https://github.com/ajmwagar/stego/issues/5))**
 - [x] Encoding / Decoding of binary files
 - [ ] Better error handling/messages
 - [ ] CI/Test suite
