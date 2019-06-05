@@ -5,10 +5,11 @@
 
 
 
-*stego* is a stegographic swiss army knife.
+*stego* is a steganographic swiss army knife.
 
 ## Features
 
+- Cross platform (MacOS, Windows, Linux)
 - Encoding and decoding of images/text/binary files into audio/photo/movie files
 - Fast and nearly undetectable encoding.
 - Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--txt`)
@@ -28,6 +29,11 @@ stego decode --input encoded-image.png # prints out the encoded message ("Hello,
 
 # Stdin detection
 echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.png
+
+# Help
+stego --help
+stego encode --help
+stego decode --help
 ```
 
 
@@ -36,6 +42,15 @@ echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.pn
 ```bash
 cargo install stego
 ```
+
+OR
+
+```bash
+git clone https://github.com/ajmwagar/stego
+cd stego
+cargo install --path ./ --force
+```
+
 ## 🚥 Roadmap
 
 - [x] CLI
