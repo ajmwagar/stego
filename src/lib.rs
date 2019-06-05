@@ -51,6 +51,24 @@ impl LSBStego {
         }
     }
 
+    /// Create a new LSBStego instance by taking in a DynamicImage
+    pub fn from_rgba(im: RgbaImage) -> Self {
+        let (width, height) = im.dimensions();
+
+
+        LSBStego {
+            image: im,
+            width,
+            height,
+            channels: <Rgba<u8> as Pixel>::channel_count() as usize,
+            current_height: 0,
+            current_width: 0,
+            current_channel: 0,
+            maskONE: 0,
+            maskZERO: 0
+        }
+    }
+
     /// Returns the size of the loaded image
     fn get_size(&self) -> u32 {
         self.height * self.width
@@ -197,6 +215,7 @@ impl LSBStego {
 
     /// Encodes an image into another image
     pub fn encode_image(&mut self, im: DynamicImage) -> RgbaImage {
+        let im = im.to_bgra();
         let (width, height) = im.dimensions();
 
         let channels = <Rgba<u8> as Pixel>::channel_count() as u32;
@@ -215,6 +234,7 @@ impl LSBStego {
             for w in 0..width {
                 for chan in 0..channels {
                     let val = im.get_pixel(w, h)[chan as usize];
+                    println!("Chan: {}/{}, Val: {}", chan, channels, val);
                     self.put_binary_value(self.byteValue(val as usize));
                 }
 
@@ -237,11 +257,12 @@ impl LSBStego {
                 for chan in 0..channels {
                     let val = unhideimg.get_pixel_mut(w,h);
                     val[chan as usize] = u8::from_str_radix(&self.read_byte(), 2).unwrap();
+                    println!("Chan: {}/{}, Val: {}", chan, channels, val[chan as usize]);
                 }
             }
         }
 
-        self.image.clone()
+        unhideimg
     }
 
     /// Encodes a binary file into the image

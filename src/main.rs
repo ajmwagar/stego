@@ -86,7 +86,7 @@ fn main() {
                 DataType::Image => {
 
                     let pim: DynamicImage = image::open(&Path::new(&payload.unwrap())).unwrap();
-                    let im2 = stego.encode_image(pim);
+                    im2 = stego.encode_image(pim);
 
                 },
                 DataType::Text => {
@@ -122,12 +122,6 @@ fn main() {
 
 
                     file.write_all(&stego.decode_binary());
-
-
-//                         let mut file = File::create(&Path::new(&output.unwrap()));
-
-//                         file.
-//                         bytes.(&Path::new(&output.unwrap()));
 
                 },
                 DataType::Image => {
