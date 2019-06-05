@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate structopt;
+#[macro_use] extern crate log;
 
 use structopt::clap::arg_enum;
 use structopt::StructOpt;
@@ -62,6 +63,10 @@ enum StegoCLI {
 }
 
 fn main() {
+    print_header();
+
+    pretty_env_logger::init();
+
     let opt = StegoCLI::from_args();
 
     match opt {
@@ -102,7 +107,7 @@ fn main() {
                 }
             } 
 
-            println!("Saving file to {:?}", output);
+            info!("Saving file to {:?}", output);
 
             im2.save(&Path::new(&output));
 
@@ -116,7 +121,7 @@ fn main() {
             match dtype {
                 DataType::File => {
                     let mut bytes: Vec<u8> = Vec::new();
-                    println!("Saving file to {:?}", output);
+                    info!("Saving file to {:?}", output);
 
                     let mut file = File::create(&Path::new(&output.unwrap())).unwrap();
 
@@ -127,7 +132,7 @@ fn main() {
                 DataType::Image => {
                         let im2 = stego.decode_image();
 
-                        println!("Saving file to {:?}", output);
+                        info!("Saving file to {:?}", output);
 
                         im2.save(&Path::new(&output.unwrap()));
 
@@ -143,4 +148,17 @@ fn main() {
         }
 
     }
+}
+
+fn print_header() {
+    println!(r"
+     _                   
+ ___| |_ ___  __ _  ___  
+/ __| __/ _ \/ _` |/ _ \ 
+\__ \ ||  __/ (_| | (_) |
+|___/\__\___|\__, |\___/ 
+             |___/       
+=========================
+Created by: Avery Wagar
+")
 }
