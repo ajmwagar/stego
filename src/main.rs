@@ -26,7 +26,7 @@ arg_enum! {
 
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "stego", about = "Stegnography at it's finest")]
+#[structopt(name = "stego", about = "Steganography at it's finest")]
 enum StegoCLI {
     #[structopt(name = "encode")]
     /// Encoding command
