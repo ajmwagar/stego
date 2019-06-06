@@ -1,4 +1,4 @@
-// #[macro_use] extern crate structopt;
+#[macro_use] extern crate structopt;
 #[macro_use] extern crate log;
 use log::{LevelFilter};
 use atty::Stream;
@@ -24,6 +24,17 @@ arg_enum! {
     }
 }
 
+#[derive(StructOpt, Debug)]
+#[structopt(name = "stego", about = "Stegnography at it's finest")]
+struct Opt {
+    // The number of occurrences of the `v/verbose` flag
+    /// Verbose mode (-v, -vv, -vvv, etc.)
+    #[structopt(short = "v", long = "verbose", parse(from_occurrences))]
+    verbose: u8,
+
+    #[structopt(flatten)]
+    command: StegoCLI,
+}
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "stego", about = "Stegnography at it's finest")]
@@ -31,6 +42,8 @@ enum StegoCLI {
     #[structopt(name = "encode")]
     /// Encoding command
     Encode {
+
+        
         #[structopt(short = "i", long = "input", parse(from_os_str))]
         /// Input image
         input: PathBuf,
@@ -64,19 +77,28 @@ enum StegoCLI {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let opt = Opt::from_args();
 
     if atty::is(Stream::Stdout) {
         print_header();
 
         let mut builder = pretty_env_logger::formatted_timed_builder();
 
-        // .format(|buf, record| writeln!(buf, "{} - {}", record.level(), record.args()))
-        builder.filter(None, LevelFilter::Info).init();
+        let filter = match opt.verbose {
+            0 => LevelFilter::Error,
+            1 => LevelFilter::Warn,
+            2 => LevelFilter::Info,
+            3 => LevelFilter::Debug,
+            4 => LevelFilter::Trace,
+            5 => LevelFilter::Off,
+            _ => LevelFilter::Off
+        };
+
+        builder.filter(None, filter).init();
     }
+    
 
-    let opt = StegoCLI::from_args();
-
-    match opt {
+    match opt.command {
         StegoCLI::Encode{ input, output, dtype, payload } => {
             // Use the open function to load an image from a Path.
             // ```open``` returns a dynamic image.
