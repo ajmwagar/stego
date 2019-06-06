@@ -80,7 +80,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let opt = Opt::from_args();
 
     if atty::is(Stream::Stdout) {
-        print_header();
+
+        if opt.verbose >= 3 {
+            print_header();
+        }
 
         let mut builder = pretty_env_logger::formatted_timed_builder();
 
