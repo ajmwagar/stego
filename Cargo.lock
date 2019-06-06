@@ -411,6 +411,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "stego"
 version = "0.1.0"
 dependencies = [
+ "atty 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "image 0.21.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "pretty_env_logger 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",

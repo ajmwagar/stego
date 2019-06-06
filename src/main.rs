@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate structopt;
 #[macro_use] extern crate log;
+use log::{LevelFilter};
+use atty::Stream;
 
 use structopt::clap::arg_enum;
 use structopt::StructOpt;
@@ -63,9 +65,15 @@ enum StegoCLI {
 }
 
 fn main() {
-    print_header();
 
-    pretty_env_logger::init_timed();
+    if atty::is(Stream::Stdout) {
+        print_header();
+
+        let mut builder = pretty_env_logger::formatted_timed_builder();
+
+        // .format(|buf, record| writeln!(buf, "{} - {}", record.level(), record.args()))
+        builder.filter(None, LevelFilter::Info).init();
+    }
 
     let opt = StegoCLI::from_args();
 
@@ -78,7 +86,7 @@ fn main() {
 
             let mut im2 = RgbaImage::new(0,0);
 
-	   info!("Loading host image: {}", &input.into_os_string().into_string().unwrap());
+            info!("Loading host image: {}", &input.into_os_string().into_string().unwrap());
 
             match dtype {
                 DataType::File => {
@@ -150,11 +158,11 @@ fn main() {
 
                 },
                 DataType::Image => {
-                        let im2 = stego.decode_image();
+                    let im2 = stego.decode_image();
 
-                        info!("Saving file to {:?}", output);
+                    info!("Saving file to {:?}", output);
 
-                        im2.save(&Path::new(&output.unwrap()));
+                    im2.save(&Path::new(&output.unwrap()));
 
 
                 },
@@ -178,6 +186,7 @@ fn print_header() {
 \__ \ ||  __/ (_| | (_) |
 |___/\__\___|\__, |\___/ 
              |___/       
+a steganographic swiss army knife
 =========================
 Created by: Avery Wagar
 ")
