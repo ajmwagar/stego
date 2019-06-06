@@ -26,23 +26,23 @@
 # Simple encoding
 
 # Encodes the message "Hello, Stego!" into the provided image
-stego encode --input image.png --output encoded-image.png --txt "Hello, Stego\!" 
+stego encode text --input image.png --output encoded-image.png --txt "Hello, Stego\!" 
 
 # Simple decoding
 
 # decodes and prints out the encoded message ("Hello, Stego!") hidden in the provided image
-stego decode --input encoded-image.png 
+stego decode text --input encoded-image.png 
 
 # Stdin detection
-echo "Hello, Stego\!" | stego encode --input image.png --output encoded-image.png
+echo "Hello, Stego\!" | stego encode text --input image.png --output encoded-image.png
 
 # Example
 
 # encodes contents of "secret" into hostimage.png and saves as output.png
-cat secret | stego encode -i hostimage.png -o output.png 
+cat secret | stego encode text -i hostimage.png -o output.png 
 
 # decodes and prints contents of "secret"
-stego decode -i output.png
+stego decode text -i output.png
 
 # Help
 stego --help
@@ -71,7 +71,10 @@ cargo install --path ./ --force
 - [x] Encoding / Decoding of text
 - [x] Encoding / Decoding of images **(currently broken see [#5](https://github.com/ajmwagar/stego/issues/5))**
 - [x] Encoding / Decoding of binary files
+- [x] Add logging
 - [ ] Better error handling/messages
+- [ ] Add file encryption
+- [ ] Add file compression
 - [ ] CI/Test suite
 - [ ] Trait based API for custom datatypes
 - [ ] [bincode](https://github.com/servo/bincode) support
