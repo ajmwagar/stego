@@ -83,3 +83,14 @@ cargo install --path ./ --force
 - [ ] Jurassic Park
 - [ ] Another mass extinction
 - [ ] ???
+
+## 🤝 Acknowledgments & Contributors
+
+`stego` wouldn't be possible without:
+
+- Nathan Laha ([@TheDekuTree](https://github.com/TheDekuTree))
+- Avery Wagar ([@ajmwagar](https://github.com/ajmwagar))
+
+`stego` was inspired by:
+- [`xsv`](https://github.com/BurntSushi/xsv)
+- [`LSBPython`](https://github.com/RobinDavid/LSB-Steganography)
