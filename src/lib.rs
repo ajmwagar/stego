@@ -233,9 +233,9 @@ impl LSBStego {
         for h in 0..height{
             for w in 0..width {
                 for chan in 0..channels {
-                    let val = im.get_pixel(w, h)[chan as usize];
-                    // println!("Chan: {}/{}, Val: {}", chan, channels, val);
-                    self.put_binary_value(self.byte_value(val as usize));
+                    let val = im.get_pixel(w, h);
+                    self.put_binary_value(self.byte_value(val[chan as usize] as usize));
+                    println!("Chan: {}/{}, Val: {}", chan, channels, val[chan as usize]);
                 }
 
             }
@@ -250,14 +250,24 @@ impl LSBStego {
 
         let width = u32::from_str_radix(&self.read_bits(16), 2).unwrap();
         let height = u32::from_str_radix(&self.read_bits(16), 2).unwrap();
+
         let mut unhideimg = image::RgbaImage::new(width, height);
 
         for h in 0..height {
             for w in 0..width {
                 for chan in 0..channels {
                     let val = unhideimg.get_pixel_mut(w,h);
+                    // let color = match chan {
+                    //     0 => 0, // Red
+                    //     1 => 1, // Green
+                    //     2 => 2, // Blue
+                    //     3 => 3, // Alpha
+                    //     _ => continue
+                            
+                    // };
+
                     val[chan as usize] = u8::from_str_radix(&self.read_byte(), 2).unwrap();
-                    // println!("Chan: {}/{}, Val: {}", chan, channels, val[chan as usize]);
+                    println!("Chan: {}/{}, Val: {}", chan, channels, val[chan as usize]);
                 }
             }
         }
