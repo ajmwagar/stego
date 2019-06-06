@@ -65,7 +65,7 @@ enum StegoCLI {
 fn main() {
     print_header();
 
-    pretty_env_logger::init();
+    pretty_env_logger::init_timed();
 
     let opt = StegoCLI::from_args();
 
@@ -78,30 +78,48 @@ fn main() {
 
             let mut im2 = RgbaImage::new(0,0);
 
+	   info!("Loading host image: {}", &input.into_os_string().into_string().unwrap());
+
             match dtype {
                 DataType::File => {
+                    let path = payload.unwrap();
                     let mut bytes = Vec::new();
-                    let mut file = File::open(&Path::new(&payload.unwrap())).unwrap();
+                    info!("Loading binary file {}", &path);
+
+                    let mut file = File::open(&Path::new(&path)).unwrap();
 
                     file.read_to_end(&mut bytes);
+
+                    info!("Encoding to host image...");
+
 
                     im2 = stego.encode_binary(bytes);
 
                 },
                 DataType::Image => {
+                    let path = payload.unwrap();
+                    info!("Loading hidden image {}", &path);
 
-                    let pim: DynamicImage = image::open(&Path::new(&payload.unwrap())).unwrap();
+                    let pim: DynamicImage = image::open(&Path::new(&path)).unwrap();
+
+
+                    info!("Encoding to host image...");
+
                     im2 = stego.encode_image(pim);
 
                 },
                 DataType::Text => {
                     if payload != None {
+                        info!("Encoding text paylod to host image...");
                         im2 = stego.encode_text(payload.unwrap());
                     }
                     else {
+                        warn!("No payload specified... Reading from stdin");
+
                         let mut msg = String::new();
                         std::io::stdin().read_to_string(&mut msg);
 
+                        info!("Encoding to host image...");
                         im2 = stego.encode_text(msg);
                     }
                 }
@@ -110,6 +128,8 @@ fn main() {
             info!("Saving file to {:?}", output);
 
             im2.save(&Path::new(&output));
+
+            info!("Done!");
 
         },
         StegoCLI::Decode { input, output, dtype} => {
