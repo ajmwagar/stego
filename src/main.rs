@@ -160,6 +160,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 },
                 DataType::Image => {
+                    // TODO: Fix this
+                    warn!("Image decoding is currently broken (see https://github.com/ajmwagar/stego/issues/5)");
+
                     let im2 = stego.decode_image();
 
                     info!("Saving file to {:?}", output);
