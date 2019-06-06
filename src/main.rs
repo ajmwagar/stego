@@ -1,4 +1,4 @@
-#[macro_use] extern crate structopt;
+// #[macro_use] extern crate structopt;
 #[macro_use] extern crate log;
 use log::{LevelFilter};
 use atty::Stream;

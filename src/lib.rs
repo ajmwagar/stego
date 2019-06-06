@@ -25,9 +25,9 @@ pub struct LSBStego  {
     current_channel: usize,
 
     /// Current index in the MASK_ONE_VALUES
-    maskONE: usize,
+    mask_one: usize,
     /// Current index in the MASK_ZERO_VALUES
-    maskZERO: usize,
+    mask_zero: usize,
 
 }
 
@@ -46,8 +46,8 @@ impl LSBStego {
             current_height: 0,
             current_width: 0,
             current_channel: 0,
-            maskONE: 0,
-            maskZERO: 0
+            mask_one: 0,
+            mask_zero: 0
         }
     }
 
@@ -64,37 +64,37 @@ impl LSBStego {
             current_height: 0,
             current_width: 0,
             current_channel: 0,
-            maskONE: 0,
-            maskZERO: 0
+            mask_one: 0,
+            mask_zero: 0
         }
     }
 
-    /// Returns the size of the loaded image
-    fn get_size(&self) -> u32 {
-        self.height * self.width
-    }
+    // /// Returns the size of the loaded image
+    // fn get_size(&self) -> u32 {
+    //     self.height * self.width
+    // }
 
     /// Returns the mask value of the current maskONE index
     pub fn get_mask_one(&self) -> usize {
-        MASK_ONE_VALUES[self.maskONE as usize] as usize
+        MASK_ONE_VALUES[self.mask_one as usize] as usize
     }
 
     /// Returns the mask value of the current maskZERO index
     pub fn get_mask_zero(&self) -> usize {
-        MASK_ZERO_VALUES[self.maskZERO as usize] as usize
+        MASK_ZERO_VALUES[self.mask_zero as usize] as usize
     }
 
     /// Put a string of binary_values into `self.image`
     pub fn put_binary_value(&mut self, bits: String) {
         for c in bits.chars() {
             // Get pixel value
-            let mut val = self.image.get_pixel_mut(self.current_width, self.current_height);
+            let val = self.image.get_pixel_mut(self.current_width, self.current_height);
 
             if c == '1' {
-                val[self.current_channel] = val[self.current_channel] | MASK_ONE_VALUES[self.maskONE as usize]; // Or with maskONE
+                val[self.current_channel] = val[self.current_channel] | MASK_ONE_VALUES[self.mask_one as usize]; // Or with maskONE
             }
             else {
-                val[self.current_channel] = val[self.current_channel] & MASK_ZERO_VALUES[self.maskZERO as usize]; // And with maskZERO
+                val[self.current_channel] = val[self.current_channel] & MASK_ZERO_VALUES[self.mask_zero as usize]; // And with maskZERO
             }
 
             *val = *val;
@@ -116,12 +116,12 @@ impl LSBStego {
                 if self.current_height == self.height - 1 {
                     self.current_height = 0;
 
-                    if MASK_ONE_VALUES[self.maskONE as usize] == 128 {
+                    if MASK_ONE_VALUES[self.mask_one as usize] == 128 {
                         panic!("No available slots remaining (image filled)");
                     }
                     else {
-                        self.maskONE += 1;
-                        self.maskZERO += 1;
+                        self.mask_one += 1;
+                        self.mask_zero += 1;
                     }
                 }
                 else {
@@ -140,7 +140,7 @@ impl LSBStego {
     /// Read a single bit from the image
     fn read_bit(&mut self) -> char {
         let val = self.image.get_pixel(self.current_width, self.current_height)[self.current_channel];
-        let val = val & MASK_ONE_VALUES[self.maskONE];
+        let val = val & MASK_ONE_VALUES[self.mask_one];
         self.next_slot();
 
         if val > 0 { '1' } else { '0' }
@@ -164,7 +164,7 @@ impl LSBStego {
     }
 
     /// Returns a binary string in byte size of a given integer
-    fn byteValue(&self, val: usize) -> String {
+    fn byte_value(&self, val: usize) -> String {
         self.binary_value(val, 8)
     }
     
@@ -190,8 +190,8 @@ impl LSBStego {
         let binl = self.binary_value(txt.len(), 16);
         self.put_binary_value(binl);
         for c in txt.chars() {
-            let byteValue = self.byteValue(c as usize);
-            self.put_binary_value(byteValue)
+            let byte_value = self.byte_value(c as usize);
+            self.put_binary_value(byte_value)
         }
 
         // Return the new image
@@ -235,7 +235,7 @@ impl LSBStego {
                 for chan in 0..channels {
                     let val = im.get_pixel(w, h)[chan as usize];
                     println!("Chan: {}/{}, Val: {}", chan, channels, val);
-                    self.put_binary_value(self.byteValue(val as usize));
+                    self.put_binary_value(self.byte_value(val as usize));
                 }
 
             }
@@ -276,7 +276,7 @@ impl LSBStego {
         self.put_binary_value(self.binary_value(length, 64));
 
         for byte in data {
-            self.put_binary_value(self.byteValue(byte as usize));
+            self.put_binary_value(self.byte_value(byte as usize));
         }
 
         self.image.clone()
@@ -292,7 +292,7 @@ impl LSBStego {
         }
 
         self.put_binary_value(self.binary_value(length, 64));
-        for i in 0..length{
+        for _ in 0..length{
             output.push(u8::from_str_radix(&self.read_byte(),2).unwrap());
         }
          
