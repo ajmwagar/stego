@@ -4,6 +4,8 @@
 [![stego](https://docs.rs/stego/badge.svg)](https://docs.rs/stego)
 [![Build Status](https://travis-ci.org/ajmwagar/stego.svg?branch=master)](https://travis-ci.org/ajmwagar/stego)
 [![dependency status](https://deps.rs/repo/github/ajmwagar/stego/status.svg)](https://deps.rs/repo/github/ajmwagar/stego)
+[![License](https://img.shields.io/crates/l/pbr.svg)](https://github.com/ajmwagar/stego/blob/master/LICENSE.md)
+
 
 
 
