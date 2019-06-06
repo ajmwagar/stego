@@ -234,7 +234,7 @@ impl LSBStego {
             for w in 0..width {
                 for chan in 0..channels {
                     let val = im.get_pixel(w, h)[chan as usize];
-                    println!("Chan: {}/{}, Val: {}", chan, channels, val);
+                    // println!("Chan: {}/{}, Val: {}", chan, channels, val);
                     self.put_binary_value(self.byte_value(val as usize));
                 }
 
@@ -257,7 +257,7 @@ impl LSBStego {
                 for chan in 0..channels {
                     let val = unhideimg.get_pixel_mut(w,h);
                     val[chan as usize] = u8::from_str_radix(&self.read_byte(), 2).unwrap();
-                    println!("Chan: {}/{}, Val: {}", chan, channels, val[chan as usize]);
+                    // println!("Chan: {}/{}, Val: {}", chan, channels, val[chan as usize]);
                 }
             }
         }
@@ -291,7 +291,6 @@ impl LSBStego {
             panic!("Carrier image not big enough to hold hidden file");
         }
 
-        self.put_binary_value(self.binary_value(length, 64));
         for _ in 0..length{
             output.push(u8::from_str_radix(&self.read_byte(),2).unwrap());
         }

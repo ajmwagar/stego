@@ -149,9 +149,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             match dtype {
                 DataType::File => {
-                    info!("Saving file to {:?}", output);
+                    let path = output.unwrap();
+                    info!("Saving file to {:?}", path);
 
-                    let mut file = File::create(&Path::new(&output.unwrap()))?;
+                    let mut file = File::create(&Path::new(&path))?;
 
 
                     file.write_all(&stego.decode_binary())?;
