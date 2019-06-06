@@ -2,7 +2,7 @@
 name = "stego"
 description = "A steganographic swiss army knife"
 repository = "https://github.com/ajmwagar/stego"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Avery Wagar <ajmw.subs@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -10,3 +10,6 @@ license = "MIT"
 [dependencies]
 image = "0.21"
 structopt = "0.2"
+log = "0.4"
+pretty_env_logger = "0.3"
+atty = "0.2"

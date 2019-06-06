@@ -1,5 +1,7 @@
-#[macro_use]
-extern crate structopt;
+#[macro_use] extern crate structopt;
+#[macro_use] extern crate log;
+use log::{LevelFilter};
+use atty::Stream;
 
 use structopt::clap::arg_enum;
 use structopt::StructOpt;
@@ -11,7 +13,7 @@ use std::path::{Path, PathBuf};
 use std::io::prelude::*;
 use std::error::Error;
 
-use image::{RgbaImage, DynamicImage, Pixel};
+use image::{DynamicImage};
 
 arg_enum! {
     #[derive(Debug)]
@@ -62,6 +64,16 @@ enum StegoCLI {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+
+    if atty::is(Stream::Stdout) {
+        print_header();
+
+        let mut builder = pretty_env_logger::formatted_timed_builder();
+
+        // .format(|buf, record| writeln!(buf, "{} - {}", record.level(), record.args()))
+        builder.filter(None, LevelFilter::Info).init();
+    }
+
     let opt = StegoCLI::from_args();
 
     match opt {
@@ -73,38 +85,59 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             let mut im2;
 
+            info!("Loading host image: {}", &input.into_os_string().into_string().unwrap());
+
             match dtype {
                 DataType::File => {
+                    let path = payload.unwrap();
                     let mut bytes = Vec::new();
-                    let mut file = File::open(&Path::new(&payload.unwrap()))?;
+                    
+                    info!("Loading binary file {}", &path);
+
+                    let mut file = File::open(&Path::new(&path))?;
 
                     file.read_to_end(&mut bytes)?;
+
+                    info!("Encoding to host image...");
+
 
                     im2 = stego.encode_binary(bytes);
 
                 },
                 DataType::Image => {
+                    let path = payload.unwrap();
+                    info!("Loading hidden image {}", &path);
 
-                    let pim: DynamicImage = image::open(&Path::new(&payload.unwrap()))?;
+                    let pim: DynamicImage = image::open(&Path::new(&path))?;
+
+
+                    info!("Encoding to host image...");
+
                     im2 = stego.encode_image(pim);
 
                 },
                 DataType::Text => {
                     if payload != None {
+                        info!("Encoding text paylod to host image...");
                         im2 = stego.encode_text(payload.unwrap());
                     }
                     else {
+                        warn!("No payload specified... Reading from stdin");
+
                         let mut msg = String::new();
                         std::io::stdin().read_to_string(&mut msg)?;
 
+                        info!("Encoding to host image...");
                         im2 = stego.encode_text(msg);
                     }
                 }
             } 
 
-            println!("Saving file to {:?}", output);
+            info!("Saving file to {:?}", output);
 
             im2.save(&Path::new(&output))?;
+
+            info!("Done!");
 
             Ok(())
         },
@@ -116,8 +149,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             match dtype {
                 DataType::File => {
-                    // let bytes: Vec<u8> = Vec::new();
-                    println!("Saving file to {:?}", output);
+                    info!("Saving file to {:?}", output);
 
                     let mut file = File::create(&Path::new(&output.unwrap()))?;
 
@@ -128,13 +160,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 },
                 DataType::Image => {
-                        let im2 = stego.decode_image();
+                    let im2 = stego.decode_image();
 
-                        println!("Saving file to {:?}", output);
+                    info!("Saving file to {:?}", output);
 
-                        im2.save(&Path::new(&output.unwrap()))?;
+                    im2.save(&Path::new(&output.unwrap()))?;
 
-                        Ok(())
+                    Ok(())
 
                 },
                 DataType::Text => {
@@ -149,4 +181,18 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
     }
+}
+
+fn print_header() {
+    println!(r"
+     _                   
+ ___| |_ ___  __ _  ___  
+/ __| __/ _ \/ _` |/ _ \ 
+\__ \ ||  __/ (_| | (_) |
+|___/\__\___|\__, |\___/ 
+             |___/       
+a steganographic swiss army knife
+=========================
+Created by: Avery Wagar
+")
 }
