@@ -27,26 +27,24 @@
 
 ```bash
 
-# Simple encoding
+# Text encoding/decoding
 
 # Encodes the message "Hello, Stego!" into the provided image
-stego encode text --input image.png --output encoded-image.png --txt "Hello, Stego\!" 
+stego encode text --input image.png --output encoded-image.png --payload "Hello, Stego\!" 
 
-# Simple decoding
-
-# decodes and prints out the encoded message ("Hello, Stego!") hidden in the provided image
+# Decodes and prints out the encoded message ("Hello, Stego!") hidden in the provided image
 stego decode text --input encoded-image.png 
+
+# File encoding/decoding
+
+# Encodes the file hidden.docx into the provided image
+stego encode file --input image.png --output encoded-image.png --payload hidden.docx 
+
+# Decodes and saves the content to decoded.docx the provided image
+stego decode file --input encoded-image.png --output decoded.docx
 
 # Stdin detection
 echo "Hello, Stego\!" | stego encode text --input image.png --output encoded-image.png
-
-# Example
-
-# encodes contents of "secret" into hostimage.png and saves as output.png
-cat secret | stego encode text -i hostimage.png -o output.png 
-
-# decodes and prints contents of "secret"
-stego decode text -i output.png
 
 # Help
 stego --help
