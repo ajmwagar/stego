@@ -13,9 +13,10 @@
 
 ## Features
 
-- Cross platform (MacOS, Windows, Linux)
-- Encoding and decoding of images/text/binary files into photos
+
 <!--- Encoding and decoding of images/text/binary files into audio/photo/movie files-->
+- Cross platform (MacOS, Windows, Linux)
+- Encoding and decoding of images/text/binary files into photos (audio/video coming soon)
 - Fast and nearly undetectable encoding.
 - Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--txt`)
 - lossless decoding of data
