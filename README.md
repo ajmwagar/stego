@@ -40,10 +40,10 @@ stego decode text --input encoded-image.png
 # Encodes the file hidden.docx into the provided image
 stego encode file --input image.png --output encoded-image.png --payload hidden.docx 
 
-# Decodes and saves the content to decoded.docx the provided image
+# Decodes and saves the content to decoded.docx from the provided image
 stego decode file --input encoded-image.png --output decoded.docx
 
-# Stdin detection
+# Stdin detection (for text-encoding)
 echo "Hello, Stego\!" | stego encode text --input image.png --output encoded-image.png
 
 # Help
