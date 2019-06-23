@@ -1,12 +1,12 @@
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::{Path, PathBuf};
+use std::path::{Path};
 use stego::*;
-use image::{DynamicImage, ImageBgra8};
+use image::DynamicImage;
 
 fn setup() -> LSBStego {
     let im: DynamicImage = image::open(&Path::new(&"./tests/img/test.png")).unwrap();
-    let mut stego = LSBStego::new(im.clone());
+    let stego = LSBStego::new(im.clone());
     stego
 }
 
@@ -31,7 +31,7 @@ fn encode_decode_binary(){
 
     let mut bytes = Vec::new();
     let mut file = File::open(&Path::new(&"./tests/img/beemoviescript")).unwrap();
-    file.read_to_end(&mut bytes);
+    assert!(file.read_to_end(&mut bytes).is_ok());
 
     let im2 = stego.encode_binary(bytes.clone());
 
