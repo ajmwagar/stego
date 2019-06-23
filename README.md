@@ -18,7 +18,7 @@
 - Cross platform (MacOS, Windows, Linux)
 - Encoding and decoding of images/text/binary files into photos (audio/video coming soon)
 - Fast and nearly undetectable encoding (to the human eye).
-- Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--txt`)
+- Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--payload`)
 - lossless decoding of data
 - Simple, stateless CLI
 - Zero system-dependencies (standalone binary) 
