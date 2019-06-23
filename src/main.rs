@@ -25,7 +25,8 @@ arg_enum! {
 }
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "stego", about = "Stegnography at it's finest")]
+#[structopt(name = "stego")]
+/// a steganographic swiss army knife
 struct Opt {
     // The number of occurrences of the `v/verbose` flag
     /// Verbose mode (-v, -vv, -vvv, etc.)
