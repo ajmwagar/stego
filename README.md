@@ -1,4 +1,5 @@
 ![Stego](./img/logo.png)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fajmwagar%2Fstego.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fajmwagar%2Fstego?ref=badge_shield)
 
 [![Crates.io](https://img.shields.io/crates/v/stego.svg)](https://crates.io/crates/stego)
 [![stego](https://docs.rs/stego/badge.svg)](https://docs.rs/stego)
@@ -96,3 +97,7 @@ cargo install --path ./ --force
 `stego` was inspired by:
 - [`xsv`](https://github.com/BurntSushi/xsv)
 - [`LSBPython`](https://github.com/RobinDavid/LSB-Steganography)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fajmwagar%2Fstego.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fajmwagar%2Fstego?ref=badge_large)
