@@ -1,12 +1,11 @@
 ![Stego](./img/logo.png)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fajmwagar%2Fstego.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fajmwagar%2Fstego?ref=badge_shield)
 
 [![Crates.io](https://img.shields.io/crates/v/stego.svg)](https://crates.io/crates/stego)
 [![stego](https://docs.rs/stego/badge.svg)](https://docs.rs/stego)
 [![Build Status](https://travis-ci.org/ajmwagar/stego.svg?branch=master)](https://travis-ci.org/ajmwagar/stego)
 [![dependency status](https://deps.rs/repo/github/ajmwagar/stego/status.svg)](https://deps.rs/repo/github/ajmwagar/stego)
 [![License](https://img.shields.io/crates/l/pbr.svg)](https://github.com/ajmwagar/stego/blob/master/LICENSE.md)
-
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fajmwagar%2Fstego.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fajmwagar%2Fstego?ref=badge_shield)
 
 
 
