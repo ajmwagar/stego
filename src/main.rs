@@ -1,5 +1,5 @@
-#[macro_use] extern crate structopt;
 #[macro_use] extern crate log;
+
 use log::{LevelFilter};
 use atty::Stream;
 
@@ -18,14 +18,15 @@ use image::{DynamicImage};
 arg_enum! {
     #[derive(Debug)]
     enum DataType {
-        Image,
+        // Image,
         Text,
         File
     }
 }
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "stego", about = "Stegnography at it's finest")]
+#[structopt(name = "stego")]
+/// a steganographic swiss army knife
 struct Opt {
     // The number of occurrences of the `v/verbose` flag
     /// Verbose mode (-v, -vv, -vvv, etc.)
@@ -129,18 +130,18 @@ fn main() -> Result<(), Box<dyn Error>> {
                     im2 = stego.encode_binary(bytes);
 
                 },
-                DataType::Image => {
-                    let path = payload.unwrap();
-                    info!("Loading hidden image {}", &path);
+                // DataType::Image => {
+                //     let path = payload.unwrap();
+                //     info!("Loading hidden image {}", &path);
 
-                    let pim: DynamicImage = image::open(&Path::new(&path))?;
+                //     let pim: DynamicImage = image::open(&Path::new(&path))?;
 
 
-                    info!("Encoding to host image...");
+                //     info!("Encoding to host image...");
 
-                    im2 = stego.encode_image(pim);
+                //     im2 = stego.encode_image(pim);
 
-                },
+                // },
                 DataType::Text => {
                     if payload != None {
                         info!("Encoding text paylod to host image...");
@@ -185,19 +186,19 @@ fn main() -> Result<(), Box<dyn Error>> {
                     Ok(())
 
                 },
-                DataType::Image => {
-                    // TODO: Fix this
-                    warn!("Image decoding is currently broken (see https://github.com/ajmwagar/stego/issues/5)");
+                // DataType::Image => {
+                //     // TODO: Fix this
+                //     warn!("Image decoding is currently broken (see https://github.com/ajmwagar/stego/issues/5)");
 
-                    let im2 = stego.decode_image();
+                //     let im2 = stego.decode_image();
 
-                    info!("Saving file to {:?}", output);
+                //     info!("Saving file to {:?}", output);
 
-                    im2.save(&Path::new(&output.unwrap()))?;
+                //     im2.save(&Path::new(&output.unwrap()))?;
 
-                    Ok(())
+                //     Ok(())
 
-                },
+                // },
                 DataType::Text => {
                     // TODO Support hidden image / hiddenfile
                     print!("{}",stego.decode_text());

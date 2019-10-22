@@ -4,6 +4,8 @@
 [![stego](https://docs.rs/stego/badge.svg)](https://docs.rs/stego)
 [![Build Status](https://travis-ci.org/ajmwagar/stego.svg?branch=master)](https://travis-ci.org/ajmwagar/stego)
 [![dependency status](https://deps.rs/repo/github/ajmwagar/stego/status.svg)](https://deps.rs/repo/github/ajmwagar/stego)
+[![License](https://img.shields.io/crates/l/pbr.svg)](https://github.com/ajmwagar/stego/blob/master/LICENSE.md)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fajmwagar%2Fstego.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fajmwagar%2Fstego?ref=badge_shield)
 
 
 
@@ -11,10 +13,12 @@
 
 ## Features
 
+
+<!--- Encoding and decoding of images/text/binary files into audio/photo/movie files-->
 - Cross platform (MacOS, Windows, Linux)
-- Encoding and decoding of images/text/binary files into audio/photo/movie files
-- Fast and nearly undetectable encoding.
-- Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--txt`)
+- Encoding and decoding of images/text/binary files into photos (audio/video coming soon)
+- Fast and nearly undetectable encoding (to the human eye).
+- Smart `stdin`/`stdout` detection (try piping to `stego` instead of using `--payload`)
 - lossless decoding of data
 - Simple, stateless CLI
 - Zero system-dependencies (standalone binary) 
@@ -23,26 +27,24 @@
 
 ```bash
 
-# Simple encoding
+# Text encoding/decoding
 
 # Encodes the message "Hello, Stego!" into the provided image
-stego encode text --input image.png --output encoded-image.png --txt "Hello, Stego\!" 
+stego encode text --input image.png --output encoded-image.png --payload "Hello, Stego\!" 
 
-# Simple decoding
-
-# decodes and prints out the encoded message ("Hello, Stego!") hidden in the provided image
+# Decodes and prints out the encoded message ("Hello, Stego!") hidden in the provided image
 stego decode text --input encoded-image.png 
 
-# Stdin detection
+# File encoding/decoding
+
+# Encodes the file hidden.docx into the provided image
+stego encode file --input image.png --output encoded-image.png --payload hidden.docx 
+
+# Decodes and saves the content to decoded.docx from the provided image
+stego decode file --input encoded-image.png --output decoded.docx
+
+# Stdin detection (for text-encoding)
 echo "Hello, Stego\!" | stego encode text --input image.png --output encoded-image.png
-
-# Example
-
-# encodes contents of "secret" into hostimage.png and saves as output.png
-cat secret | stego encode text -i hostimage.png -o output.png 
-
-# decodes and prints contents of "secret"
-stego decode text -i output.png
 
 # Help
 stego --help
@@ -83,3 +85,18 @@ cargo install --path ./ --force
 - [ ] Jurassic Park
 - [ ] Another mass extinction
 - [ ] ???
+
+## 🤝 Acknowledgments & Contributors
+
+`stego` wouldn't be possible without:
+
+- Nathan Laha ([@TheDekuTree](https://github.com/TheDekuTree))
+- Avery Wagar ([@ajmwagar](https://github.com/ajmwagar))
+
+`stego` was inspired by:
+- [`xsv`](https://github.com/BurntSushi/xsv)
+- [`LSBPython`](https://github.com/RobinDavid/LSB-Steganography)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fajmwagar%2Fstego.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fajmwagar%2Fstego?ref=badge_large)
